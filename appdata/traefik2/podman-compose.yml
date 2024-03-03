@@ -1,21 +1,32 @@
 version: '3.8'
-
+networks:
+  web:
+    name: web
 services:
   reverse-proxy:
     image: traefik:2.11
     # Enables the web UI and tells Traefik to listen to docker
     command: --api.insecure=true --providers.docker=true
+      "--certificatesresolvers.lets-encrypt.acme.email=\"sergey.zinkin@gmail.com\""
+      "--certificatesresolvers.lets-encrypt.acme.storage=/acme.json"
+      "--certificatesresolvers.lets-encrypt.acme.tlschallenge=true"
+      "--entrypoints.http.http.redirections.entryPoint.to=https"
+      "--entrypoints.http.http.redirections.entryPoint.scheme=https"
     restart: "unless-stopped"
-    #networks:
-    #  - "web"
+    security_opt:
+      - "label=type:container_runtime_t"
+    # networks:
+    #  - "podman"
     ports:
       # The HTTP port
       - "80:80"
       # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
+      - "443:443"
     volumes:
       # So that Traefik can listen to the Docker events
       - /run/user/1000/podman/podman.sock:/var/run/docker.sock
+      - "/home/sergey/appdata/traefik2/acme.json:/acme.json:z"
       #- "/home/sergey/appdata/traefik2/traefik.yml:/traefik.yml:ro"
     labels:
       - "traefik.enable=true"
