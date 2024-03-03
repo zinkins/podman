@@ -46,6 +46,7 @@ services:
       "--certificatesresolvers.lets-encrypt.acme.email=\"sergey.zinkin@gmail.com\""
       "--certificatesresolvers.lets-encrypt.acme.storage=/acme.json"
       "--certificatesresolvers.lets-encrypt.acme.tlschallenge=true"
+      "--providers.docker.exposedbydefault=true"
     restart: "unless-stopped"
     security_opt:
       - "label=type:container_runtime_t"
@@ -59,13 +60,14 @@ services:
       - "443:443"
     volumes:
       # So that Traefik can listen to the Docker events
-      - /run/user/1000/podman/podman.sock:/var/run/docker.sock
+      - "/run/user/1000/podman/podman.sock:/var/run/docker.sock"
       - "/home/sergey/appdata/traefik2/acme.json:/acme.json:z"
       #- "/home/sergey/appdata/traefik2/traefik.yml:/traefik.yml:ro"
     labels:
       - "traefik.enable=true"
       #- "traefik.http.routers.whoami.entrypoints=web"
   whoami:
+    <<: *common-keys-core 
     # A container that exposes an API to show its IP address
     image: traefik/whoami
     networks:
@@ -73,4 +75,5 @@ services:
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.media-server.local`)"
       - "traefik.enable=true"
-    #  - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami.entrypoints=web"
+      - "traefik.http.routers.whoami-http.entrypoints=web"
