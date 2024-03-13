@@ -46,7 +46,6 @@ services:
       "--certificatesresolvers.lets-encrypt.acme.email=\"sergey.zinkin@gmail.com\""
       "--certificatesresolvers.lets-encrypt.acme.storage=/acme.json"
       "--certificatesresolvers.lets-encrypt.acme.tlschallenge=true"
-      "--providers.docker.exposedbydefault=true"
     restart: "unless-stopped"
     security_opt:
       - "label=type:container_runtime_t"
