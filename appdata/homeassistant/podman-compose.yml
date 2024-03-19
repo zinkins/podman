@@ -1,10 +1,10 @@
 networks:
   web:
-    address: ":80"
+    external: true
 
 services:
-  homeassistant:
-    container_name: homeassistant
+  home-assistant:
+    container_name: home-assistant
     image: "ghcr.io/home-assistant/home-assistant:stable"
     volumes:
       - /home/sergey/apps/home_assistant/config:/config
@@ -14,6 +14,12 @@ services:
     networks:
      - "web"
     network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_BIND_SERVICE
+      - SYS_ADMIN
     labels:
       - "traefik.http.routers.home-assistant.rule=Host(`ha.media-server.local`)"
       - "traefik.enable=true"
+      - "traefik.docker.network=web"
+      - "traefik.http.services.home-assistant.loadbalancer.server.port=8123"
