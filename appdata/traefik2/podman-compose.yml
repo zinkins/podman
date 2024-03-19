@@ -1,7 +1,9 @@
 version: '3.8'
 networks:
   web:
-    name: web
+    address: ":80"
+  websecure:
+    address: ":443"
 
 ########################### EXTENSION FIELDS
 # Helps eliminate repetition of sections
@@ -74,5 +76,3 @@ services:
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.media-server.local`)"
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.entrypoints=web"
-      - "traefik.http.routers.whoami-http.entrypoints=web"

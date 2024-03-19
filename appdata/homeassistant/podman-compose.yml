@@ -1,3 +1,7 @@
+networks:
+  web:
+    address: ":80"
+
 services:
   homeassistant:
     container_name: homeassistant
@@ -6,8 +10,10 @@ services:
       - /home/sergey/apps/home_assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-    ports:
-      # The HTTP port
-      - "80:80"
     privileged: true
+    networks:
+     - "web"
     network_mode: host
+    labels:
+      - "traefik.http.routers.home-assistant.rule=Host(`ha.media-server.local`)"
+      - "traefik.enable=true"
