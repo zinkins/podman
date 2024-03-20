@@ -75,4 +75,6 @@ services:
      - "web"
     labels:
       - "traefik.http.routers.whoami.rule=Host(`whoami.media-server.local`)"
+      - "traefik.http.services.whoami.loadbalancer.server.port=8120"
+      - "traefik.docker.network=web"
       - "traefik.enable=true"
