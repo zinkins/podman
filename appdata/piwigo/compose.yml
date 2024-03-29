@@ -1,0 +1,38 @@
+networks:
+  web:
+    external: true
+
+services:
+  piwigo:
+    image: lscr.io/linuxserver/piwigo:latest
+    container_name: piwigo
+    volumes:
+      - /home/sergey/apps/piwigo/config:/config
+      - /myraid1/nas/Фото:/gallery
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
+    networks:
+     - "web"
+
+  mariadb:
+    image: ghcr.io/linuxserver/mariadb
+    container_name: piwigodb
+    environment:
+      - MYSQL_ROOT_PASSWORD=Buzhetdu,19820607
+      - MYSQL_DATABASE=piwigo
+      - MYSQL_USER=piwigo
+      - MYSQL_PASSWORD=Buzhetdu,1
+    volumes:
+      - /home/sergey/apps/piwigo/db:/config
+      - /etc/localtime:/etc/localtime
+    ports:
+      - 3301:3306
+    restart: always
+    networks:
+     - "web"
